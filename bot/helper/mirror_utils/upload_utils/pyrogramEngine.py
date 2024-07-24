@@ -53,6 +53,7 @@ class TgUploader:
         self.__media_group = False
         self.__upload_dest = ''
         self.__bot_pm = False
+        self._is_private = False
         self.__user_id = listener.message.from_user.id
         self.__leechmsg = {}
         self.__leech_utils = self.__listener.leech_utils
@@ -331,7 +332,7 @@ class TgUploader:
                         isDeleted = True
                     if self.__is_cancelled:
                         return
-                    if not self.__is_corrupted and (self.__listener.isSuperGroup or config_dict['LEECH_LOG_ID']):
+                    if not self.__is_corrupted and (self.__listener.isSuperGroup or self.__bot_pm and or config_dict['LEECH_LOG_ID']):
                         self.__msgs_dict[self.__sent_msg.link] = file_
                     await sleep(1)
                 except Exception as err:
