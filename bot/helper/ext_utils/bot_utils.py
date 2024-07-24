@@ -137,15 +137,12 @@ def handleIndex(index, dic):
     return index
 
 def get_progress_bar_string(pct):
-    pct = float(str(pct).strip('%'))
+    pct = float(pct.strip("%"))
     p = min(max(pct, 0), 100)
     cFull = int(p // 8)
-    cPart = int(p % 8 - 1)
-    p_str = '■' * cFull
-    if cPart >= 0:
-        p_str += ['▤', '▥', '▦', '▧', '▨', '▩', '■'][cPart]
-    p_str += '□' * (12 - cFull)
-    return f"[{p_str}]"
+    p_str = "█" * cFull
+    p_str += "▒" * (12 - cFull)
+    return f"{p_str}"
 
 
 def get_all_versions():
@@ -215,6 +212,7 @@ def get_readable_message():
         elapsed = time() - download.message.date.timestamp()
         msg += BotTheme('STATUS_NAME', Name="Task is being Processed!" if config_dict['SAFE_MODE'] and elapsed >= config_dict['STATUS_UPDATE_INTERVAL'] else escape(f'{download.name()}'))
         if download.status() not in [MirrorStatus.STATUS_SPLITTING, MirrorStatus.STATUS_SEEDING]:
+        	
             msg += BotTheme('BAR', Bar=f"{get_progress_bar_string(download.progress())} {download.progress()}")
             msg += BotTheme('PROCESSED', Processed=f"{download.processed_bytes()} of {download.size()}")
             msg += BotTheme('STATUS', Status=download.status(), Url=msg_link)
@@ -245,9 +243,10 @@ def get_readable_message():
         msg += BotTheme('USER',
                         User=download.message.from_user.mention(style="html"))
         msg += BotTheme('ID', Id=download.message.from_user.id)
+        msg += "<blockquote>"
         if (download.eng()).startswith("qBit"):
             msg += BotTheme('BTSEL', Btsel=f"/{BotCommands.BtSelectCommand}_{download.gid()}")
-        msg += BotTheme('CANCEL', Cancel=f"/{BotCommands.CancelMirror}_{download.gid()}")
+        msg += BotTheme('CANCEL', Cancel=f"/{BotCommands.CancelMirror}_{download.gid()}</blockquote>")
 
     if len(msg) == 0:
         return None, None
